@@ -78,3 +78,18 @@ class BlogListDetailTests(TestCase):
     # 9. get_absolute_url строит правильный адрес
     def test_get_absolute_url(self):
         self.assertEqual(self.blog.get_absolute_url(), f'/blog/{self.blog.pk}/')
+
+
+class BlogLikesTests(TestCase):
+    """Задание 2: учёт популярности статей (лайки/просмотры)."""
+
+    def setUp(self):
+        self.blog = Blog.objects.create(title='Популярная статья', content='Текст')
+
+    def test_new_blog_has_zero_likes(self):
+        self.assertEqual(self.blog.likes, 0)
+
+    def test_detail_view_increments_likes(self):
+        self.client.get(reverse('blog_detail', kwargs={'pk': self.blog.pk}))
+        self.blog.refresh_from_db()
+        self.assertEqual(self.blog.likes, 1)
